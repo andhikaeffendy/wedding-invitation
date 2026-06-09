@@ -1,101 +1,111 @@
-// Public API — reads from shared store.json
-import fs from 'fs';
-import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
-const STORE_PATH = path.join(process.cwd(), '..', 'shared', 'store.json');
-
-function readStore() {
+// Lazy Prisma — only loads when API is actually called
+async function getPrisma() {
   try {
-    return JSON.parse(fs.readFileSync(STORE_PATH, 'utf-8'));
+    if (!process.env.DATABASE_URL) return null;
+    const { PrismaClient } = await import('@prisma/client');
+    return new PrismaClient();
   } catch {
-    return { invitations: [], guests: [], wishes: [], bank_accounts: [] };
+    return null;
   }
 }
 
-function writeStore(data: any) {
-  const dir = path.dirname(STORE_PATH);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-// GET /api/public/invitation/[slug]?guest=TOKEN
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const pathParts = url.pathname.split('/');
   const slug = pathParts[pathParts.length - 1];
   const guestName = url.searchParams.get('guestName') || '';
 
-  const store = readStore();
-  const invitation = store.invitations.find((i: any) => i.slug === slug);
-  if (!invitation) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-
-  // Find guest by name (URL pattern: /i/[slug]/Nama+Tamu)
-  let guest = null;
-  if (guestName) {
-    const decoded = decodeURIComponent(guestName).replace(/\+/g, ' ');
-    guest = store.guests.find((g: any) =>
-      g.invitation_id === invitation.id &&
-      g.guest_name.toLowerCase().includes(decoded.toLowerCase())
-    ) || null;
+  const prisma = await getPrisma();
+  if (!prisma) {
+    // Fallback: try reading from shared store
+    const fs = await import('fs');
+    const path = await import('path');
+    const storePath = path.default.join(process.cwd(), '..', 'shared', 'store.json');
+    const raw = fs.default.readFileSync(storePath, 'utf-8');
+    const store = JSON.parse(raw);
+    const invitation = store.invitations.find((i: any) => i.slug === slug);
+    if (!invitation) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    
+    let guest = null;
+    if (guestName) {
+      const decoded = decodeURIComponent(guestName).replace(/\+/g, ' ');
+      guest = store.guests.find((g: any) => g.invitation_id === invitation.id && g.guest_name.toLowerCase().includes(decoded.toLowerCase()));
+    }
+    
+    return NextResponse.json({
+      invitation,
+      guest,
+      guestToken: guest?.guest_token || '',
+      gallery: ['https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80'],
+      wishes: store.wishes.filter((w: any) => w.is_visible),
+      bankAccounts: store.bank_accounts || [],
+    });
   }
 
-  const gallery = [
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80',
-    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80',
-    'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80',
-    'https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=600&q=80',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80',
-    'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80',
-    'https://images.unsplash.com/photo-1519741343486-eb1a50165ad6?w=600&q=80',
-    'https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=600&q=80',
-  ];
+  try {
+    const invitation = await prisma.invitation.findUnique({ where: { slug } });
+    if (!invitation) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  return NextResponse.json({
-    invitation,
-    guest,
-    guestToken: guest?.guest_token || '',
-    gallery,
-    wishes: store.wishes.filter((w: any) => w.is_visible && w.invitation_id === invitation.id),
-    bankAccounts: store.bank_accounts,
-  });
+    let guest = null;
+    if (guestName) {
+      const decoded = decodeURIComponent(guestName).replace(/\+/g, ' ');
+      guest = await prisma.guest.findFirst({
+        where: { invitationId: invitation.id, guestName: { contains: decoded, mode: 'insensitive' } },
+      });
+    }
+
+    const [wishes, bankAccounts] = await Promise.all([
+      prisma.wish.findMany({ where: { invitationId: invitation.id, isVisible: true }, orderBy: { createdAt: 'desc' } }),
+      prisma.bankAccount.findMany({ where: { invitationId: invitation.id } }),
+    ]);
+
+    return NextResponse.json({
+      invitation, guest, guestToken: guest?.guestToken || '',
+      gallery: ['https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80'],
+      wishes, bankAccounts,
+    });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-// POST /api/public/rsvp — submit RSVP
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { guestToken, status, paxConfirmed, message } = body;
+  if (!guestToken) return NextResponse.json({ error: 'guestToken required' }, { status: 400 });
 
-  const store = readStore();
-  const idx = store.guests.findIndex((g: any) => g.guest_token === guestToken);
-  if (idx === -1) return NextResponse.json({ error: 'Guest not found' }, { status: 404 });
+  const prisma = await getPrisma();
+  if (!prisma) return NextResponse.json({ error: 'DB not available' }, { status: 500 });
 
-  store.guests[idx].rsvp_status = status;
-  store.guests[idx].pax_confirmed = paxConfirmed || 0;
-  writeStore(store);
-
-  return NextResponse.json({ success: true, guest: store.guests[idx] });
+  try {
+    const guest = await prisma.guest.findUnique({ where: { guestToken } });
+    if (!guest) return NextResponse.json({ error: 'Guest not found' }, { status: 404 });
+    const updated = await prisma.guest.update({
+      where: { guestToken },
+      data: { rsvpStatus: status, paxConfirmed: paxConfirmed || 0 },
+    });
+    return NextResponse.json({ success: true, guest: updated });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-// PUT /api/public/wish — add wish
 export async function PUT(req: NextRequest) {
   const body = await req.json();
-  const { invitationId, senderName, text, guestToken } = body;
+  const { senderName, text } = body;
+  const prisma = await getPrisma();
+  if (!prisma) return NextResponse.json({ error: 'DB not available' }, { status: 500 });
 
-  const store = readStore();
-  const guest = guestToken ? store.guests.find((g: any) => g.guest_token === guestToken) : null;
-
-  const wish = {
-    id: `w-${Date.now()}`,
-    invitation_id: invitationId || 'inv-001',
-    guest_id: guest?.id || null,
-    sender_name: senderName,
-    message: text,
-    is_visible: true,
-    created_at: new Date().toISOString(),
-  };
-  store.wishes.unshift(wish);
-  writeStore(store);
-
-  return NextResponse.json({ success: true, wish });
+  try {
+    const inv = await prisma.invitation.findFirst();
+    if (!inv) return NextResponse.json({ error: 'No invitation' }, { status: 404 });
+    const wish = await prisma.wish.create({
+      data: { invitationId: inv.id, senderName, message: text, isVisible: true },
+    });
+    return NextResponse.json({ success: true, wish });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
