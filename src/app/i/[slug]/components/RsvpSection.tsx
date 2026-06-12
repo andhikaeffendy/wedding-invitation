@@ -31,7 +31,7 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
   ];
 
   return (
-    <section id="section-rsvp" className="relative py-20 md:py-32 px-6">
+    <section id="section-rsvp" className="relative py-20 md:py-32 px-6" aria-labelledby="rsvp-heading">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <motion.div
@@ -42,9 +42,9 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
           transition={{ duration: 0.8 }}
         >
           <p className="section-subtitle">Konfirmasi Kehadiran</p>
-          <h2 className="section-title">RSVP</h2>
+          <h2 className="section-title" id="rsvp-heading">RSVP</h2>
           <p className="text-[#6F7F55] text-sm mt-2">Konfirmasi kehadiran Anda sangat berarti bagi kami</p>
-          <div className="w-16 h-[1px] bg-[#C9A86A] mx-auto mt-4" />
+          <div className="w-16 h-[1px] bg-[#C9A86A] mx-auto mt-4" aria-hidden="true" />
         </motion.div>
 
         {submitted ? (
@@ -52,8 +52,10 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
             className="card text-center py-12"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            role="status"
+            aria-live="polite"
           >
-            <div className="w-20 h-20 rounded-full bg-[#6F7F55]/10 flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-full bg-[#6F7F55]/10 flex items-center justify-center mx-auto mb-6" aria-hidden="true">
               <Heart size={36} className="text-[#6F7F55]" />
             </div>
             <h3 className="font-display text-2xl text-[#22382D] mb-2">Terima Kasih!</h3>
@@ -85,24 +87,30 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
             )}
 
             {/* Status Selection */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {options.map((opt) => (
-                <motion.button
-                  key={opt.value}
-                  onClick={() => setStatus(opt.value)}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 ${
-                    status === opt.value
-                      ? `${opt.activeColor} border-transparent shadow-lg`
-                      : `border-[#C9A86A]/20 text-[#6F7F55] hover:border-[#C9A86A]/50`
-                  }`}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <opt.icon size={24} />
-                  <span className="text-xs font-medium">{opt.label}</span>
-                </motion.button>
-              ))}
-            </div>
+            <fieldset className="mb-6">
+              <legend className="sr-only">Status kehadiran</legend>
+              <div className="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Pilih status kehadiran Anda">
+                {options.map((opt) => (
+                  <motion.button
+                    key={opt.value}
+                    onClick={() => setStatus(opt.value)}
+                    role="radio"
+                    aria-checked={status === opt.value}
+                    aria-label={opt.label}
+                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 ${
+                      status === opt.value
+                        ? `${opt.activeColor} border-transparent shadow-lg`
+                        : `border-[#C9A86A]/20 text-[#6F7F55] hover:border-[#C9A86A]/50`
+                    }`}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <opt.icon size={24} aria-hidden="true" />
+                    <span className="text-xs font-medium">{opt.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </fieldset>
 
             {/* Pax Selection */}
             {status === 'Hadir' && (
@@ -118,15 +126,17 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
                   <button
                     onClick={() => setPax(Math.max(1, pax - 1))}
                     className="w-10 h-10 rounded-full border border-[#C9A86A]/30 flex items-center justify-center text-[#C9A86A] hover:bg-[#C9A86A]/10"
+                    aria-label="Kurangi jumlah tamu"
                   >
-                    -
+                    <span aria-hidden="true">-</span>
                   </button>
-                  <span className="w-14 text-center font-display text-xl text-[#22382D]">{pax}</span>
+                  <span className="w-14 text-center font-display text-xl text-[#22382D]" aria-live="polite" aria-label={`${pax} orang`}>{pax}</span>
                   <button
                     onClick={() => setPax(Math.min(guest?.pax_allocated || 5, pax + 1))}
                     className="w-10 h-10 rounded-full border border-[#C9A86A]/30 flex items-center justify-center text-[#C9A86A] hover:bg-[#C9A86A]/10"
+                    aria-label="Tambah jumlah tamu"
                   >
-                    +
+                    <span aria-hidden="true">+</span>
                   </button>
                   {guest && <span className="text-xs text-[#A9B89B]">/ max {guest.pax_allocated}</span>}
                 </div>
@@ -144,9 +154,11 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
                   <MessageCircle size={16} className="text-[#C9A86A]" /> Pesan (opsional)
                 </label>
                 <textarea
+                  id="rsvp-message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Tulis pesan untuk kedua mempelai..."
+                  aria-label="Pesan untuk kedua mempelai"
                   className="w-full px-4 py-3 rounded-xl border border-[#C9A86A]/20 bg-white/50 text-sm text-[#22382D] placeholder:text-[#A9B89B] focus:outline-none focus:ring-2 focus:ring-[#C9A86A]/30 resize-none"
                   rows={3}
                 />
@@ -158,16 +170,18 @@ export default function RsvpSection({ guestToken, guest, invitation }: { guestTo
               <motion.button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
+                aria-label={isSubmitting ? 'Mengirim konfirmasi...' : 'Konfirmasi kehadiran'}
+                aria-busy={isSubmitting}
                 className="btn-primary w-full flex items-center justify-center gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {isSubmitting ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                 ) : (
                   <>
-                    <Check size={18} /> Konfirmasi Kehadiran
+                    <Check size={18} aria-hidden="true" /> Konfirmasi Kehadiran
                   </>
                 )}
               </motion.button>

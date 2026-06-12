@@ -36,6 +36,8 @@ model Invitation {
   wishes          Wish[]
   bankAccounts    BankAccount[]
   souvenirStocks  SouvenirStock[]
+  loveStories     LoveStory[]
+  gallery         Gallery[]
 
   @@map("invitations")
 }
@@ -147,4 +149,32 @@ model SouvenirStock {
   invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@map("souvenir_stocks")
+}
+
+model LoveStory {
+  id          String   @id @default(uuid())
+  invitationId String  @map("invitation_id")
+  title       String?
+  description String?
+  date        String?
+  icon        String?
+  isVisible   Boolean  @default(true) @map("is_visible")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  invitation  Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@map("love_stories")
+}
+
+model Gallery {
+  id          String   @id @default(uuid())
+  invitationId String  @map("invitation_id")
+  role        String  @default("gallery")
+  publicUrl   String  @map("public_url")
+  altText     String? @map("alt_text")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  invitation  Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@map("gallery")
 }

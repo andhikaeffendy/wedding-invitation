@@ -34,7 +34,7 @@ export const dummyInvitation: Invitation = {
     animationIntensity: 'medium',
   },
   settings: {
-    coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1606103940244-837cc604f58c?w=1200&q=80',
     heroImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80',
     bridePhoto: 'https://images.unsplash.com/photo-1594552073388-6e3f45e83df6?w=400&q=80',
     groomPhoto: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80',

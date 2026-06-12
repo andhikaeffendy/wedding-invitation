@@ -1,42 +1,69 @@
 # 🌿 Wedding Invitation — Digital Wedding Platform
 
-> Undangan pernikahan digital premium dengan tema **Modern Organic Luxury**.  
-> Dibangun dengan Next.js 16, Tailwind CSS, dan Framer Motion.
+> Undangan pernikahan digital premium dengan **15 template unik**.  
+> Dibangun dengan Next.js 16, Tailwind CSS v4, Framer Motion.
 
-**[🔗 Live Demo](https://wedding-invitation.vercel.app)** — **[📂 GitHub](https://github.com/andhikaeffendy/wedding-invitation)**
+**[🔗 Live Demo](https://wedding-invitation-liart-alpha.vercel.app)** — **[🔗 Admin Panel](https://wedding-admin-eight.vercel.app)**
 
 ---
 
-## 📸 Preview
+## 🎭 15 Template Unik — Satu Per Satu
 
-| Opening Cover | Hero Section | Gallery |
-|:---:|:---:|:---:|
-| Golden monogram, nama tamu personal, floating petals | Countdown realtime, parallax, share button | Masonry grid, lightbox zoom, lazy loading |
+Setiap template memiliki **karakteristik layout, animasi, section order, dan visual identity yang berbeda**.
+
+| # | Template | ID | Karakteristik Unik |
+|---|----------|----|-------------------|
+| 1 | **🌿 Modern Organic** | `modern-organic-luxury` | Earthy natural, botanical accents, soft fade-up, card sections |
+| 2 | **🌹 Classic Rose Gold** | `classic-rose-gold` | Romantic blush, scale-in animasi, circle countdown, alternating story |
+| 3 | **⬜ Minimal Monochrome** | `minimal-monochrome` | Ultra-clean geometric, fade-in, row countdown, compact spacing |
+| 4 | **🌴 Tropical Paradise** | `tropical-paradise` | Lush greens, slide-left, parallax hero, generous spacing |
+| 5 | **💜 Royal Purple** | `royal-purple` | Regal purple, zoom-in, ornate gold, side-dots nav, dramatic reveal |
+| 6 | **🌸 Sakura Pink** | `sakura-pink` | Japanese-inspired, slide-right, 12 cherry petals, floating chip nav |
+| 7 | **📜 Vintage Kraft** | `vintage-kraft` | Old-world sepia, letterpress feel, timeline events, dotted border |
+| 8 | **✨ Aureum Gold** | `aureum-gold` | Art deco opulence, zoom-in, column countdown, double border |
+| 9 | **🌙 Celestial Night** | `celestial-night` | Dark starry night, parallax, 20 star particles, ethereal glow |
+| 10 | **🏵️ Terracotta Bloom** | `terracotta-bloom` | Mediterranean clay, fade-up, split hero, botanical ornaments |
+| 11 | **🌊 Ocean Breeze** | `ocean-breeze` | Coastal blue, slide-left, staggered hero, wide body layout |
+| 12 | **🤍 Jasmine Pure** | `jasmine-white` | Crisp editorial white, fade-in, 4-column grid, sharp corners |
+| 13 | **🌸 Dream Garden** | `dream-garden` | Whimsical pastel, scale-in, 14 floating petals, dreamy transitions |
+| 14 | **✦ Javanese Elegance** | `javanese-elegance` | Indonesian batik-inspired, ornate gold, side-dots, cultural grace |
+| 15 | **💎 Aire Royale** | `aire-royale` | Ultra-luxury dark mode, serif body, diamond facets, dramatic contrast |
+
+> **Demo:** `https://wedding-invitation-liart-alpha.vercel.app/demo/[template-id]`
+
+---
+
+## 🎨 Perbedaan Layout Per Template
+
+| Fitur | Variasi |
+|-------|---------|
+| **Section Order** | Quote, story, location, countdown — berbeda per template |
+| **Animasi** | fade-up, fade-in, scale-in, slide-left, slide-right, zoom-in, parallax, stagger |
+| **Navigation** | Bottom bar, floating chip, side dots, top minimal |
+| **Countdown** | Grid, row, columns, circle — ukuran sm/md/lg |
+| **Event Cards** | Stacked, side-by-side, cards, timeline |
+| **Gallery** | Masonry 2-3 col, grid 2-4 col, collage |
+| **Couple Layout** | Side-by-side, stacked, cards, overlay |
+| **Wishes** | List, cards, wall (2-column grid) |
+| **Heading Scale** | sm/md/lg |
+| **Body Width** | Narrow / normal / wide |
 
 ---
 
 ## 🚀 Quick Deploy (Vercel)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/andhikaeffendy/wedding-invitation)
-
-### Manual Deploy
-
 ```bash
-# 1. Clone
-git clone https://github.com/andhikaeffendy/wedding-invitation.git
-cd wedding-invitation
-
-# 2. Install
+# 1. Install
 npm install
 
-# 3. Run dev
+# 2. Run dev
 npm run dev
 # → http://localhost:3000
 
-# 4. Build
+# 3. Build
 npm run build
 
-# 5. Deploy to Vercel
+# 4. Deploy
 vercel --prod
 ```
 
@@ -47,38 +74,26 @@ vercel --prod
 | URL | Deskripsi |
 |-----|-----------|
 | `/i/andhika-laila` | Undangan generic (tanpa nama tamu) |
-| `/i/andhika-laila/Keluarga+Besar+Ahmad+Dahlan` | Undangan personal (nama tamu di URL) |
+| `/i/andhika-laila?guest=token` | Undangan personal (guest token) |
+| `/demo/[template-id]` | Preview template tertentu |
 
 ---
 
-## 🎨 Fitur Undangan (11 Section)
+## 📸 Fitur Undangan (11 Section)
 
 | Section | Fitur |
 |---------|-------|
-| **Opening Cover** | Monogram A&L, nama tamu personal, floating petals, tombol buka undangan, musik consent |
-| **Hero** | Countdown realtime, nama pasangan, parallax background, share & copy link, sticky navigation |
-| **Couple Profile** | Foto bride/groom, nama lengkap, orang tua, social link |
-| **Event Details** | Akad + Resepsi, **Google Maps embed interactive**, dress code, add to calendar |
-| **Love Story** | Vertical timeline 4 milestone dengan foto |
-| **Gallery** | Masonry grid 8 foto, lightbox zoom, lazy loading blur-up |
-| **RSVP** | Hadir/Tidak/Ragu, pax selector, pesan, konfirmasi dengan animasi |
-| **QR Guest Pass** | QR code unik per guest, info tamu, download PNG |
-| **Digital Gift** | Bank & e-wallet, copy account, upload bukti |
+| **Opening Cover** | Monogram animasi, nama tamu personal, floating petals/particles, musik consent |
+| **Hero** | Nama pasangan, countdown realtime, parallax, share link, WhatsApp share |
+| **Couple Profile** | Foto bride/groom, nama lengkap, orang tua |
+| **Event Details** | Akad + Resepsi, Google Maps embed, Waze, dress code |
+| **Love Story** | Vertical timeline / alternating, 4 milestone dengan foto |
+| **Gallery** | Masonry/grid/collage, lightbox zoom, lazy loading |
+| **RSVP** | Hadir/Tidak/Ragu, pax selector, pesan, konfirmasi async |
+| **QR Guest Pass** | QR code unik per guest, download PNG |
+| **Digital Gift** | Bank & e-wallet, copy account |
 | **Wishes** | Form ucapan + list doa realtime |
-| **Closing** | Thank you, Quran quote (Ar-Rum: 21), family names |
-
----
-
-## 🎨 Color Palette — Modern Organic Luxury
-
-| Name | Hex | Tailwind |
-|------|-----|----------|
-| Forest Green | `#22382D` | `forest` |
-| Olive | `#6F7F55` | `olive` |
-| Sage | `#A9B89B` | `sage` |
-| Cream | `#F7F1E6` | `cream` |
-| Gold | `#C9A86A` | `gold` |
-| Terracotta | `#B86B4B` | `terracotta` |
+| **Closing** | Thank you, Quran quote, family names |
 
 ---
 
@@ -92,6 +107,7 @@ vercel --prod
 | Animation | Framer Motion |
 | Icons | Lucide React |
 | QR Code | qrcode.react |
+| Database | Supabase / JSON file |
 | Deployment | Vercel |
 
 ---
@@ -101,54 +117,27 @@ vercel --prod
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Landing page
-│   ├── layout.tsx            # Root layout + metadata
-│   ├── loading.tsx           # Route loading state
-│   ├── error.tsx             # Route error boundary
-│   ├── globals.css           # Theme + animations
-│   ├── i/[slug]/page.tsx     # Invitation page
-│   │   └── components/       # 11 section components
-│   └── api/public/           # Public API routes
-│       └── invitation/[slug]/route.ts  # GET invitation data
+│   ├── i/[slug]/page.tsx              # Invitation page
+│   │   ├── components/                # 11 section components
+│   │   └── templates/                 # 15 template wrappers
+│   └── api/public/invitation/         # Public API
+├── components/
+│   └── WeddingTemplateShell.tsx       # Main template renderer
 ├── lib/
-│   ├── types.ts              # TypeScript interfaces
-│   ├── whatsapp-share.ts     # WhatsApp share helper
-│   └── supabase/client.ts    # Supabase client (optional)
-└── shared/                   # Shared data (linked to admin)
-    └── store.json            # Single source of truth
+│   ├── template-styles.ts             # Style configs (colors, fonts)
+│   ├── template-layouts.ts            # Layout configs (order, anims)
+│   └── template-types.ts              # TypeScript types
+└── shared/store.json                  # Database
 ```
-
----
-
-## 🔗 System Architecture
-
-```
-┌─────────────────┐     read (API)       ┌──────────────────┐
-│  wedding-invite  │ ◄────────────────── │  shared/store.json│
-│  (public)        │                     │  (single source)  │
-│  port 3000       │                     └────────┬─────────┘
-└─────────────────┘                               │ write (API)
-                                           ┌──────┴──────────┐
-                                           │  wedding-admin  │
-                                           │  (CMS)           │
-                                           │  port 3001       │
-                                           └─────────────────┘
-```
-
-> **Kedua project harus berjalan bersamaan.** Admin menulis ke `shared/store.json`, undangan publik membaca dari file yang sama.
 
 ---
 
 ## 📝 Environment Variables
 
-Copy `.env.example` ke `.env.local`:
-
 ```env
-# Optional: Supabase (jika ingin persistent database)
+# Optional: Supabase (fallback ke store.json)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-
-# Tanpa Supabase → auto pakai shared/store.json
 ```
 
 ---

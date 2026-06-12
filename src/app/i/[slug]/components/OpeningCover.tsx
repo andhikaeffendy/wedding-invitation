@@ -1,156 +1,210 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Music, Volume2, VolumeX } from "lucide-react";
 
-export default function OpeningCover({ guestToken, invitation, guest }: { guestToken: string; invitation?: any; guest?: any }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function OpeningCover({
+  guestToken,
+  invitation,
+  guest,
+  onOpen,
+}: {
+  guestToken: string;
+  invitation?: any;
+  guest?: any;
+  onOpen?: () => void;
+}) {
   const [isVisible, setIsVisible] = useState(true);
-  const inv = invitation || { bride_name: 'Laila', groom_name: 'Andhika', settings: { coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80' } };
-  const coverUrl = inv?.settings?.coverImage || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80';
+  const inv = invitation || {
+    groom_name: "Andhika",
+    bride_name: "Laila",
+    event_date: "2027-01-30",
+    settings: {
+      coverImage:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+    },
+  };
+  const coverImg =
+    inv.settings.coverImage ||
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80";
 
   const handleOpen = () => {
-    setIsOpen(true);
-    setTimeout(() => setIsVisible(false), 1200);
+    if (onOpen) onOpen();
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 1200);
   };
 
   if (!isVisible) return null;
 
   return (
     <AnimatePresence>
-      <motion.section
-        className="fixed inset-0 z-50 flex items-center justify-center"
-        exit={{ opacity: 0, scale: 1.1 }}
-        transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed inset-0 z-[100] flex flex-col md:flex-row overflow-hidden bg-[#1F2E26]"
       >
-        {/* Background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${coverUrl})` }}
-        />
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="absolute inset-0 bg-[#22382D]/40" />
-
-        {/* Floating petals */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-2xl opacity-30"
-            initial={{ y: "-10vh", x: `${Math.random() * 100}vw`, rotate: 0 }}
-            animate={{ y: "110vh", rotate: 360, x: `${Math.random() * 100}vw` }}
-            transition={{ duration: 10 + Math.random() * 10, repeat: Infinity, delay: Math.random() * 5 }}
-          >
-            🌿
-          </motion.div>
-        ))}
-
-        {/* Gold line decoration - top */}
-        <motion.div
-          className="absolute top-[15%] left-[10%] right-[10%] h-[1px]"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.5, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
-        >
-          <div className="w-full h-full bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent" />
-        </motion.div>
-
-        {/* Content */}
-        <motion.div
-          className="relative z-10 text-center px-6 max-w-md w-full"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        >
-          {/* Monogram */}
-          <motion.div
-            className="mb-8"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 1.2, delay: 0.6, type: "spring" }}
-          >
-            <div className="w-24 h-24 mx-auto rounded-full border-2 border-[#C9A86A] flex items-center justify-center">
-              <span className="font-display text-3xl text-[#C9A86A]">A<span className="text-2xl">&</span>L</span>
-            </div>
-          </motion.div>
-
-          {/* Greeting */}
-          <motion.p
-            className="text-[#C9A86A] text-sm tracking-[0.3em] uppercase mb-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-          >
-            Kepada Yth.
-          </motion.p>
-
-          {/* Guest Name */}
-          <motion.h1
-            className="font-display text-3xl md:text-4xl text-[#F7F1E6] mb-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
-          >
-            {guest ? guest.guest_name : "Bapak/Ibu/Saudara/i"}
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            className="text-[#A9B89B]/80 text-sm mb-10 leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.3 }}
-          >
-            Kami mengundang Bapak/Ibu/Saudara/i<br />untuk hadir di hari bahagia kami
-          </motion.p>
-
-          {/* Open Button */}
-          <motion.button
-            onClick={handleOpen}
-            className="btn-primary text-base px-10 py-3.5 relative overflow-hidden group"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <span className="relative z-10">🖐️ Buka Undangan</span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        {/* SIDEBAR (Desktop Only) */}
+        <div className="hidden md:flex w-[350px] bg-[#1F2E26] border-r border-[#C9A86A]/20 flex-col justify-between p-10 z-20 relative overflow-hidden">
+          {/* Floral Ornament Top */}
+          <div className="absolute top-[-50px] left-[-50px] w-64 h-64 opacity-20 pointer-events-none rotate-12">
+            <img
+              src="https://i.ibb.co/L5Qx8S5/floral-corner.png"
+              alt=""
+              className="w-full h-full object-contain brightness-0 invert opacity-50"
             />
-          </motion.button>
+          </div>
 
-          {/* Music Consent Note */}
-          <motion.p
-            className="text-[#A9B89B]/50 text-xs mt-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.7 }}
-          >
-            Musik akan diputar setelah Anda membuka undangan
-          </motion.p>
-        </motion.div>
+          <div className="relative z-10">
+            <div className="w-12 h-12 mb-8">
+              <img
+                src="https://i.ibb.co/v3K4W7C/monogram-gold.png"
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h2 className="text-[#F7F1E6] font-serif text-3xl leading-tight mb-2 tracking-wide uppercase">
+              Eternal Sage
+            </h2>
+            <p className="text-[#C9A86A] text-[10px] tracking-[0.4em] uppercase font-light mb-12">
+              Luxury Wedding Invitation
+            </p>
 
-        {/* Gold line decoration - bottom */}
-        <motion.div
-          className="absolute bottom-[15%] left-[10%] right-[10%] h-[1px]"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.5, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
-        >
-          <div className="w-full h-full bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent" />
-        </motion.div>
+            <div className="w-24 h-[1px] bg-[#C9A86A]/30 mb-8" />
 
-        {/* Ornament */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#C9A86A]/40 text-sm tracking-[0.4em]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-        >
-          ANDHIKA & LAILA
-        </motion.div>
-      </motion.section>
+            <p className="text-[#A9B89B] text-[9px] tracking-[0.5em] uppercase leading-loose">
+              Cinematic • Elegant
+              <br />
+              Timeless • Premium
+            </p>
+          </div>
+
+          <div className="relative z-10">
+            <div className="mb-8">
+              <div className="w-12 h-12 flex items-center justify-center border border-[#C9A86A]/30 rounded-full mb-4">
+                <Music size={16} className="text-[#C9A86A]" />
+              </div>
+              <p className="text-[#F7F1E6]/40 text-[9px] leading-relaxed max-w-[200px]">
+                Desain undangan digital dengan nuansa mewah, elegan, dan animasi
+                yang smooth untuk pengalaman yang tak terlupakan.
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <div className="w-5 h-5 rounded-full bg-[#F7F1E6]" />
+              <div className="w-5 h-5 rounded-full bg-[#A9B89B]" />
+              <div className="w-5 h-5 rounded-full bg-[#6F7F55]" />
+              <div className="w-5 h-5 rounded-full bg-[#22382D]" />
+              <div className="w-5 h-5 rounded-full bg-[#B86B4B]" />
+              <div className="w-5 h-5 rounded-full bg-[#C9A86A]" />
+              <div className="w-5 h-5 rounded-full bg-[#1F2E26] border border-white/10" />
+            </div>
+          </div>
+
+          {/* Floral Ornament Bottom */}
+          <div className="absolute bottom-[-80px] left-[-30px] w-72 h-72 opacity-20 pointer-events-none -rotate-12">
+            <img
+              src="https://i.ibb.co/L5Qx8S5/floral-corner.png"
+              alt=""
+              className="w-full h-full object-contain brightness-0 invert opacity-50"
+            />
+          </div>
+        </div>
+
+        {/* MAIN AREA */}
+        <div className="relative flex-1 flex items-center justify-center p-6 overflow-hidden">
+          {/* Background Image with Cinematic Zoom */}
+          <motion.div
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "linear",
+            }}
+            className="absolute inset-0 bg-cover bg-center z-0"
+            style={{ backgroundImage: `url(${coverImg})` }}
+          />
+          <div className="absolute inset-0 bg-[#1F2E26]/40 z-[1]" />
+
+          {/* Floral Corners */}
+          <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 z-[2] opacity-80 pointer-events-none">
+            <img
+              src="https://i.ibb.co/L5Qx8S5/floral-corner.png"
+              alt=""
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 z-[2] opacity-80 pointer-events-none rotate-180">
+            <img
+              src="https://i.ibb.co/L5Qx8S5/floral-corner.png"
+              alt=""
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          {/* Center Content */}
+          <div className="relative z-10 text-center max-w-lg w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+            >
+              <p className="text-[#F7F1E6] text-[10px] md:text-xs tracking-[0.5em] uppercase mb-8 font-light">
+                You are invited to the wedding of
+              </p>
+
+              <h1 className="font-serif text-5xl md:text-7xl text-white mb-6 font-light">
+                {inv.groom_name} & {inv.bride_name}
+              </h1>
+
+              <div className="w-32 h-[1px] bg-white/20 mx-auto mb-8" />
+
+              <p className="text-[#C9A86A] font-serif text-lg md:text-xl mb-12 tracking-wide">
+                Sabtu, 30 Januari 2027
+              </p>
+
+              <div className="mb-12">
+                <p className="text-[#F7F1E6]/60 text-[10px] tracking-[0.3em] uppercase mb-4">
+                  Kepada Yth. Bapak/Ibu/Saudara/i
+                </p>
+                <div className="inline-block relative">
+                  <h3 className="text-[#F7F1E6] font-serif text-2xl md:text-3xl mb-1">
+                    {guest ? guest.guest_name : "Nama Tamu"}
+                  </h3>
+                  <div className="w-full h-[1px] bg-[#C9A86A]/50" />
+                </div>
+              </div>
+
+              <motion.button
+                onClick={handleOpen}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative px-10 py-4 bg-[#6F7F55]/90 hover:bg-[#6F7F55] text-white rounded-full font-serif text-sm tracking-[0.2em] transition-all flex items-center justify-center gap-3 mx-auto shadow-2xl backdrop-blur-sm"
+              >
+                <span>BUKA UNDANGAN</span>
+                <img
+                  src="https://i.ibb.co/v3K4W7C/monogram-gold.png"
+                  alt=""
+                  className="w-4 h-4 object-contain brightness-0 invert"
+                />
+              </motion.button>
+            </motion.div>
+          </div>
+
+          {/* Bottom Music Info (Mobile) */}
+          <div className="md:hidden absolute bottom-10 left-0 right-0 px-8 flex items-center gap-4 z-10">
+            <div className="flex-1 h-[1px] bg-white/10" />
+            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
+              <Volume2 size={12} className="text-white/60" />
+            </div>
+            <div className="flex-1 h-[1px] bg-white/10" />
+          </div>
+        </div>
+      </motion.div>
     </AnimatePresence>
   );
 }

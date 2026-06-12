@@ -1,120 +1,134 @@
 "use client";
 import { motion } from "framer-motion";
-import { MapPin, Clock, Calendar } from "lucide-react";
+import { MapPin, Calendar, Clock } from "lucide-react";
+
+const MosqueIcon = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M22 20v-2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2"></path>
+    <path d="M12 16V6"></path>
+    <path d="M12 10 9 6"></path>
+    <path d="M12 10 15 6"></path>
+    <path d="M6 16v-4a6 6 0 0 1 12 0v4"></path>
+  </svg>
+);
+
+const RingsIcon = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="8" cy="12" r="6"></circle>
+    <circle cx="16" cy="12" r="6"></circle>
+  </svg>
+);
 
 export default function EventDetails({ invitation }: { invitation?: any }) {
-  const inv = invitation || { groom_name: 'Andhika', bride_name: 'Laila', event_date: '2026-08-15' };
-
-  const akad = {
-    title: 'Akad Nikah',
-    icon: '🕌',
-    date: inv.event_date || '15 Agustus 2026',
-    time: '08:00 - 10:00 WIB',
-    venue: 'Masjid Agung Al-Muhajirin',
-    address: 'Jl. Ahmad Yani No. 15, Kota Bandung',
-    mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.9!2d107.6!3d-6.9!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMasjid%20Agung%20Bandung!5e0!3m2!1sen!2sid!4v1234567890',
-    mapsLink: 'https://maps.google.com/?q=Masjid+Agung+Al+Muhajirin+Bandung',
-  };
-
-  const resepsi = {
-    title: 'Resepsi',
-    icon: '🎉',
-    date: inv.event_date || '15 Agustus 2026',
-    time: '11:00 - 17:00 WIB',
-    venue: 'Gedung Graha Wedding Garden',
-    address: 'Jl. Sukajadi No. 200, Kota Bandung',
-    mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0!2d107.59!3d-6.88!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sGedung%20Graha%20Bandung!5e0!3m2!1sen!2sid!4v1234567890',
-    mapsLink: 'https://maps.google.com/?q=Gedung+Graha+Wedding+Bandung',
-  };
-
-  const events = [akad, resepsi];
-
-  const addToCalendar = () => {
-    const start = new Date(inv.event_date);
-    const startStr = start.toISOString().replace(/-|:|\.\d+/g, '');
-    const end = new Date(start.getTime() + 10 * 3600000);
-    const endStr = end.toISOString().replace(/-|:|\.\d+/g, '');
-    window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=Wedding+${inv.groom_name}+%26+${inv.bride_name}&dates=${startStr}/${endStr}&location=${encodeURIComponent(akad.venue)}`, '_blank');
-  };
+  const inv = invitation || {};
+  const events = [
+    {
+      title: "Akad Nikah",
+      date: "Sabtu, 30 Januari 2027",
+      time: "08.00 - 10.00 WIB",
+      location: "Masjid Nurul Iman",
+      address: "Jl. Anggrek No. 10, Jakarta Selatan",
+      maps: "https://maps.google.com",
+      icon: <MosqueIcon size={24} className="text-[#C9A86A]" />
+    },
+    {
+      title: "Resepsi",
+      date: "Sabtu, 30 Januari 2027",
+      time: "11.00 - 15.00 WIB",
+      location: "The Grand Ballroom",
+      address: "Jl. Sudirman No. 88, Jakarta Selatan",
+      maps: "https://maps.google.com",
+      icon: <RingsIcon size={24} className="text-[#C9A86A]" />
+    }
+  ];
 
   return (
-    <section id="section-event" className="relative py-20 md:py-32 px-4">
-      <div className="max-w-4xl mx-auto">
+    <section id="section-events" className="relative py-24 px-6 bg-[#F7F1E6] overflow-hidden">
+      <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
-          className="text-center mb-14"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
         >
-          <p className="section-subtitle">Dengan Memohon Rahmat Allah</p>
-          <h2 className="section-title">Rangkaian Acara</h2>
-          <div className="w-16 h-[1px] bg-[#C9A86A] mx-auto mt-4" />
+          <p className="text-[#C9A86A] text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 font-light">
+            EVENT DETAILS
+          </p>
+          <h2 className="font-serif text-3xl md:text-5xl text-[#1F2E26] mb-4 font-light">
+            Acara Spesial
+          </h2>
+          <div className="w-16 h-[1px] bg-[#C9A86A]/30 mx-auto" />
         </motion.div>
 
-        {events.map((event, i) => (
-          <motion.div
-            key={i}
-            className="mb-12 last:mb-0"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: i * 0.2 }}
-          >
-            <div className="card p-6 md:p-8">
-              <div className="text-center mb-6">
-                <span className="text-3xl">{event.icon}</span>
-                <h3 className="font-display text-2xl md:text-3xl text-[#22382D] mt-2">{event.title}</h3>
-              </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          {events.map((event, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: i * 0.2 }}
+              className="relative"
+            >
+              {/* Card Frame */}
+              <div className="absolute -inset-3 border border-[#C9A86A]/10 rounded-[40px] z-0" />
+              
+              <div className="relative z-10 bg-white/60 backdrop-blur-sm p-10 rounded-[32px] border border-white/40 shadow-xl text-center h-full flex flex-col justify-between">
+                <div>
+                  <div className="w-16 h-16 bg-[#1F2E26] rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-white shadow-lg">
+                    {event.icon}
+                  </div>
+                  
+                  <h3 className="font-serif text-2xl md:text-3xl text-[#1F2E26] mb-8 font-light">
+                    {event.title}
+                  </h3>
+                  
+                  <div className="space-y-6 mb-10">
+                    <div className="flex flex-col items-center gap-2">
+                       <p className="text-[#6F7F55] font-serif text-lg">{event.date}</p>
+                       <p className="text-[#A9B89B] text-xs tracking-wider">{event.time}</p>
+                    </div>
+                    
+                    <div className="w-12 h-[1px] bg-[#C9A86A]/20 mx-auto" />
+                    
+                    <div className="flex flex-col items-center gap-2">
+                       <p className="text-[#1F2E26] font-serif text-xl">{event.location}</p>
+                       <p className="text-[#6F7F55] text-xs max-w-[200px] leading-relaxed">{event.address}</p>
+                    </div>
+                  </div>
+                </div>
 
-              <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-6 text-sm">
-                <div className="flex items-center gap-2"><Calendar size={16} className="text-[#C9A86A]" /><span className="text-[#22382D]">{event.date}</span></div>
-                <div className="flex items-center gap-2"><Clock size={16} className="text-[#C9A86A]" /><span className="text-[#22382D]">{event.time}</span></div>
-                <div className="flex items-center gap-2"><MapPin size={16} className="text-[#C9A86A]" /><span className="text-[#22382D]">{event.venue}</span></div>
-              </div>
-
-              <p className="text-center text-[#6F7F55] text-sm mb-6">{event.address}</p>
-
-              {/* Google Maps Embed */}
-              <div className="rounded-xl overflow-hidden border border-[#C9A86A]/15 shadow-md mb-4">
-                <iframe
-                  src={event.mapsEmbed}
-                  width="100%"
-                  height="280"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={`Lokasi ${event.title}`}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="text-center">
-                <a
-                  href={event.mapsLink}
+                <motion.a
+                  href={event.maps}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#22382D] text-white rounded-full text-sm hover:bg-[#1a2a22] transition-colors"
+                  aria-label={`Lihat lokasi ${event.title} di Google Maps`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#1F2E26] text-white rounded-full text-xs tracking-[0.2em] font-light transition-all shadow-lg hover:shadow-[#1F2E26]/20"
                 >
-                  <MapPin size={14} /> Buka di Google Maps
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+                  <MapPin size={14} aria-hidden="true" />
+                  LIHAT LOKASI
+                </motion.a>
 
-        <motion.div
-          className="text-center mt-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-        >
-          <button onClick={addToCalendar} className="inline-flex items-center gap-2 px-6 py-2.5 border border-[#C9A86A] text-[#C9A86A] rounded-full text-sm hover:bg-[#C9A86A] hover:text-white transition-all">
-            <Calendar size={14} /> Tambahkan ke Kalender
-          </button>
-        </motion.div>
+                {/* Dress Code Palette */}
+                <div className="mt-10 pt-8 border-t border-[#C9A86A]/10">
+                  <p className="text-[#C9A86A] text-[9px] tracking-[0.3em] uppercase mb-4 font-light">Dress Code Palette</p>
+                  <div className="flex justify-center gap-3">
+                    {['#F7F1E6', '#A9B89B', '#6F7F55', '#22382D', '#B86B4B', '#C9A86A'].map((color, idx) => (
+                      <div key={idx} className="w-6 h-6 rounded-full border border-white shadow-sm" style={{ background: color }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative Corner Ornaments */}
+              <div className="absolute top-[-20px] left-[-20px] w-24 h-24 opacity-20 pointer-events-none">
+                 <img src="https://i.ibb.co/L5Qx8S5/floral-corner.png" alt="" className="w-full h-full object-contain" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -4,15 +4,15 @@ import { QRCodeSVG } from "qrcode.react";
 import { Download, CheckCircle } from "lucide-react";
 
 export default function QrGuestPass({ guestToken, guest, invitation }: { guestToken: string; guest?: any; invitation?: any }) {
-  const inv = invitation || { groom_name: 'Andhika', bride_name: 'Laila', event_date: '2026-08-15', id: 'inv-001' };
+  const inv = invitation || { groom_name: 'Andhika', bride_name: 'Laila', event_date: '2026-08-15', id: 'inv-001', slug: '' };
+  const invSlug = inv.slug || '';
+  const WEDDING_URL = typeof window !== 'undefined' ? window.location.origin : 'https://wedding-invitation-liart-alpha.vercel.app';
 
-  if (!guest || !guest.rsvp_status) return null;
+  // Show QR if guest has a valid guest token
+  if (!guest || !guest.guest_token) return null;
 
-  const qrPayload = JSON.stringify({
-    invitation_id: inv.id,
-    guest_token: guest.guest_token,
-    guest_name: guest.guest_name,
-  });
+  // Use URL-based QR: guest scans to open invitation or scanner checks them in
+  const guestUrl = `${WEDDING_URL}/i/${invSlug}?guest=${guest.guest_token || guestToken}`;
 
   return (
     <section id="section-qrpass" className="relative py-20 md:py-32 px-6 bg-[#22382D]/3">
@@ -83,7 +83,7 @@ export default function QrGuestPass({ guestToken, guest, invitation }: { guestTo
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white rounded-xl shadow-inner">
                 <QRCodeSVG
-                  value={qrPayload}
+                  value={guestUrl}
                   size={180}
                   level="H"
                   fgColor="#22382D"
@@ -118,9 +118,10 @@ export default function QrGuestPass({ guestToken, guest, invitation }: { guestTo
                   img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
                 }
               }}
+              aria-label="Unduh QR Pass sebagai gambar PNG"
               className="btn-outline w-full flex items-center justify-center gap-2 text-sm"
             >
-              <Download size={16} /> Download QR Pass
+              <Download size={16} aria-hidden="true" /> Download QR Pass
             </button>
           </div>
         </motion.div>

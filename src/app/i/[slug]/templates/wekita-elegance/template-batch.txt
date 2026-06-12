@@ -1,0 +1,1 @@
+Creating simplified versions of StorySection, GallerySection, CountdownSection, EventsSection, RsvpSection, GiftSection, WishesSection, ClosingSection, then page.tsx
